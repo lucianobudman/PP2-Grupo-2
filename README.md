@@ -6,3 +6,6 @@ Acabas de terminar el paso 6 y vas a comenzar el 7.
 
 Nombres de los que llegaron hasta acá:
 *PABLO CAU
+
+
+Pablo Cau V0.3 13:45
