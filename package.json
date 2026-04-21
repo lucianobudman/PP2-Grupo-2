@@ -1,0 +1,20 @@
+{
+  "name": "pp2-grupo-2",
+  "version": "1.0.0",
+  "description": "HOLA!!! Felicitaciones!!! Si llegaste acá, significa que vas bien!!!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "module",
+    "url": "git+https://github.com/lucianobudman/PP2-Grupo-2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucianobudman/PP2-Grupo-2/issues"
+  },
+  "homepage": "https://github.com/lucianobudman/PP2-Grupo-2#readme"
+}
