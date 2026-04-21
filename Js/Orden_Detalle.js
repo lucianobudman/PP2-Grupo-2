@@ -1,13 +1,13 @@
-class Orden_Detalle {
-  constructor(id_Oreden_co, Precio_Uni,id_Oreden_de,id_Producto,Cantidad) {
-    this.id_Oreden_co = id_Oreden_co;
-    this.id_Oreden_de = id_Oreden_de;
-    this.id_Producto= id_Producto;
-    this.Cantidad = Cantidad;
-    this.Precio_Uni = Productos.Precio_Uni;
+import { Productos } from "./Productos.js";
+
+export class Orden_Detalle {
+  constructor(id_orden, producto, cantidad) {
+    this.id_orden = id_orden;
+    this.producto = producto; // 🔥 guardamos el objeto completo
+    this.cantidad = cantidad;
   }
 
-  subtotal(){
-    return this.Cantidad * this.Precio_Uni
+  subtotal() {
+    return this.cantidad * this.producto.Precio_Unitario;
   }
 }
