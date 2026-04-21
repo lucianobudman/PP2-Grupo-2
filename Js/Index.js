@@ -66,7 +66,7 @@ function emitirTicket(orden) {
   console.log("\nProductos:");
   orden.detalles.forEach(det => {
     console.log(
-      `${det.producto.Nombre} x${det.cantidad} - $${det.subtotal()}`
+    `${det.producto.Nombre} x${det.cantidad} - Unitario = $${det.precioUnitario}  subtotal = $${det.subtotal()}`
     );
   });
 
