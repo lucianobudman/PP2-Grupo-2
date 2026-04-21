@@ -5,8 +5,6 @@ export class Orden_Detalle {
     this.id_orden = id_orden;
     this.producto = producto;
     this.cantidad = cantidad;
-
-    // 🔥 PRECIO HISTÓRICO
     this.precioUnitario = producto.Precio_Unitario;
   }
 
