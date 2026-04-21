@@ -1,10 +1,10 @@
 export class Productos {
-  constructor(Id_P,Precio_Unitario , Stock,Nombre,codigoBarra) {
+  constructor(Id_P, Precio_Unitario, Stock, Nombre, codigoBarra) {
     this.Id_P = Id_P;
     this.Precio_Unitario = Precio_Unitario;
     this.Stock = Stock;
     this.Nombre = Nombre;
-    this.codigoBarra =codigoBarra;
+    this.codigoBarra = codigoBarra;
   }
 
   static inventario = [];
@@ -12,30 +12,21 @@ export class Productos {
   static agregarProducto(nuevoProducto) {
     if (nuevoProducto instanceof Productos) {
       this.inventario.push(nuevoProducto);
-      return(`Producto "${nuevoProducto.nombre}" agregado al inventario.`);
+      return `Producto "${nuevoProducto.Nombre}" agregado al inventario.`;
     } else {
-      return("El elemento no es un producto válido.");
+      return "El elemento no es un producto válido.";
     }
   }
 
   static mostrarInventario() {
-    return(this.inventario);
+    return this.inventario;
   }
 
-  hayStock(cantidadRequerida){
-    return this.Stock>=cantidadRequerida
+  hayStock(cantidadRequerida) {
+    return this.Stock >= cantidadRequerida;
   }
 
-  reducirStock(cantidad){
-    this.stock-=cantidad
+  reducirStock(cantidad) {
+    this.Stock -= cantidad;
   }
-
 }
-
-
-
-
-
-  
-
-
