@@ -13,3 +13,6 @@ Pablo Cau V0.3 13:45
 yo tambien llegue - Luciano
 yo tambien llegue - Paloma
 yo tambien llege - tatiana
+
+
+para ejecutar el main usar este comando node main.js
