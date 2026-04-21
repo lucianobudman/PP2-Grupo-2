@@ -5,23 +5,21 @@ import { Cupones } from "./Cupones.js";
 import { Clientes } from "./Clientes.js";
 
 
-
 const cliente = new Clientes(1, "Juan", "Pérez", false);
-
 
 
 const cupon = new Cupones(1, "2026-12-31", "DESC5");
 
 
-// ==============================
 // 1. CREAR PRODUCTOS
-// ==============================
+
 const prod1 = new Productos(1, 10000, 0, "Teclado", "111");
 const prod2 = new Productos(2, 5000, 10, "Mouse", "222");
+const prod3 = new Productos(3, 3000, 4, "Pepsi", "333");
 
 Productos.agregarProducto(prod1);
 Productos.agregarProducto(prod2);
-
+Productos.agregarProducto(prod3);
 
 
 // 2. CREAR ORDEN
@@ -47,7 +45,7 @@ function agregarProductoAOrden(producto, cantidad) {
 
 agregarProductoAOrden(prod1, 1);
 agregarProductoAOrden(prod2, 2);
-
+agregarProductoAOrden(prod3, 3);
 
 //  4. SIMULAR PAGO
 
