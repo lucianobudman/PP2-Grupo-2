@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEODATA // ULTRA</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cyan: #00e5ff;
+      --violet: #6c00ff;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #060608;
+      color: #fff;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 20%, rgba(108,0,255,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 85% 75%, rgba(0,229,255,0.1) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav, .contenido {
+      position: relative;
+      z-index: 1;
+    }
+
+    .navbar {
+      background: rgba(6,6,8,0.75);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      margin: 16px auto;
+      max-width: 1200px;
+      padding: 12px 28px;
+    }
+
+    .navbar-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      color: #fff !important;
+    }
+
+    .navbar-brand span { color: var(--cyan); }
+
+    .btn-carrito {
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      border: none;
+      color: #000;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      padding: 10px 20px;
+      border-radius: 12px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .btn-carrito:hover { opacity: 0.85; transform: scale(1.03); }
+
+    .contador-burbuja {
+      background: rgba(0,0,0,0.3);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.75rem;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    .hero {
+      padding: 110px 0 80px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(3.5rem, 9vw, 7rem);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      background: linear-gradient(170deg, #fff 40%, rgba(255,255,255,0.15));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 24px;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04) !important;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      border-radius: 28px !important;
+      color: #fff;
+      transition: border-color 0.3s, transform 0.3s;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .card:hover {
+      border-color: rgba(0,229,255,0.5) !important;
+      transform: translateY(-10px);
+    }
+
+    .card-img-top {
+      border-radius: 18px !important;
+      height: 220px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover .card-img-top { transform: scale(1.04); }
+
+    .img-wrap {
+      overflow: hidden;
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+
+    .badge-descuento { background: rgba(255,60,60,0.15); color: #ff6060; border: 1px solid rgba(255,60,60,0.3); }
+    .badge-envio     { background: rgba(0,229,255,0.1);  color: var(--cyan); border: 1px solid rgba(0,229,255,0.25); }
+    .badge-nuevo     { background: rgba(108,0,255,0.15); color: #a855f7; border: 1px solid rgba(108,0,255,0.3); }
+
+    .badge-custom {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 99px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .card-text { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+
+    .precio {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+
+    .btn-cant {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-cant:hover { background: rgba(0,229,255,0.15); border-color: var(--cyan); color: var(--cyan); }
+
+    input[type="number"] {
+      width: 60px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      border-radius: 10px;
+      padding: 8px;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { display: none; }
+
+    input[type="number"]:focus { border-color: var(--cyan); }
+
+    .btn-agregar {
+      width: 100%;
+      padding: 14px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s, color 0.3s;
+    }
+
+    .btn-agregar:hover {
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      color: #000;
+      transform: scale(1.02);
+    }
+
+    .seccion-titulo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: -0.03em;
+      margin: 80px 0 32px;
+    }
+
+    .seccion-titulo span { color: var(--cyan); }
+
+    .cart-section {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 36px;
+      padding: 48px;
+      margin-bottom: 80px;
+    }
+
+    .cart-empty {
+      text-align: center;
+      padding: 40px 0;
+      color: rgba(255,255,255,0.35);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead th {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    thead th:last-child { text-align: right; }
+
+    tbody td {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.9rem;
+    }
+
+    tbody td:last-child {
+      text-align: right;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .btn-eliminar {
+      background: none;
+      border: 1px solid rgba(255,60,60,0.25);
+      color: rgba(255,60,60,0.5);
+      font-size: 0.65rem;
+      padding: 4px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: all 0.2s;
+    }
+
+    .btn-eliminar:hover { background: rgba(255,60,60,0.1); color: #ff6060; border-color: #ff6060; }
+
+    .total-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .total-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+    }
+
+    .total-numero {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+    }
+
+    .total-numero .sym { font-size: 0.5em; opacity: 0.5; vertical-align: super; margin-right: 4px; }
+
+    .toast-custom {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: rgba(6,6,8,0.92);
+      border: 1px solid rgba(0,229,255,0.5);
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 0.8rem;
+      color: var(--cyan);
+      z-index: 9999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(20px);
+    }
+
+    .toast-custom.visible { transform: translateY(0); opacity: 1; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+
+    @media (max-width: 576px) {
+      .cart-section { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container-fluid px-3">
+    <nav class="navbar navbar-expand d-flex justify-content-between">
+      <a class="navbar-brand" href="#">NEODATA <span>//</span> ULTRA</a>
+      <button class="btn-carrito" onclick="scrollAlCarrito()">
+        MI CARRITO
+        <span class="contador-burbuja" id="cart-count">0</span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="contenido">
+    <div class="container" style="max-width:1200px;">
+
+      <header class="hero">
+        <p class="hero-eyebrow">Tecnología de vanguardia · 2026</p>
+        <h1>TECH CORE</h1>
+        <p class="hero-sub">Providuria tecnológica premium</p>
+      </header>
+
+      <div class="row g-4" id="catalogo">
+
+        <div class="col-md-4">
+          <div class="card h-100 p-3">
+            <div class="img-wrap">
+              <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&q=80" class="card-img-top" alt="Smartphone X-1" onerror="this.style.display='none'">
+            </div>
+            <div class="card-body p-0">
+              <span class="badge-custom badge-descuento d-inline-block mb-2">10% OFF · Edición Limitada</span>
+              <h5 class="card-title">Smartphone X-1</h5>
+              <p class="card-text mb-3">Pantalla AMOLED 120Hz · Cámara cuádruple 200MP · Batería 5000mAh</p>
+              <div class="precio mb-3"><span style="font-size:1rem; opacity:0.6;">$</span>85.000</div>
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <small style="color:rgba(255,255,255,0.35); text-transform:uppercase; font-size:0.68rem;">Cantidad</small>
+                <button class="btn-cant" onclick="cambiarCantidad('cant-1', -1)">−</button>
+                <input type="number" id="cant-1" value="1" min="1" max="99">
+                <button class="btn-cant" onclick="cambiarCantidad('cant-1', 1)">+</button>
+              </div>
+              <button class="btn-agregar" onclick="agregarAlCarrito('Smartphone X-1', 85000, 'cant-1')">Añadir al carrito</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card h-100 p-3">
+            <div class="img-wrap">
+              <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80" class="card-img-top" alt="Laptop Pro Max" onerror="this.style.display='none'">
+            </div>
+            <div class="card-body p-0">
+              <span class="badge-custom badge-envio d-inline-block mb-2">Envío gratis · Elite</span>
+              <h5 class="card-title">Laptop Pro Max</h5>
+              <p class="card-text mb-3">Procesador M3 Ultra · 32GB RAM · SSD 1TB · Pantalla Retina 4K</p>
+              <div class="precio mb-3"><span style="font-size:1rem; opacity:0.6;">$</span>450.000</div>
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <small style="color:rgba(255,255,255,0.35); text-transform:uppercase; font-size:0.68rem;">Cantidad</small>
+                <button class="btn-cant" onclick="cambiarCantidad('cant-2', -1)">−</button>
+                <input type="number" id="cant-2" value="1" min="1" max="99">
+                <button class="btn-cant" onclick="cambiarCantidad('cant-2', 1)">+</button>
+              </div>
+              <button class="btn-agregar" onclick="agregarAlCarrito('Laptop Pro Max', 450000, 'cant-2')">Añadir al carrito</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card h-100 p-3">
+            <div class="img-wrap">
+              <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80" class="card-img-top" alt="Audio Ultra G" onerror="this.style.display='none'">
+            </div>
+            <div class="card-body p-0">
+              <span class="badge-custom badge-nuevo d-inline-block mb-2">Nueva generación · Studio</span>
+              <h5 class="card-title">Audio Ultra G</h5>
+              <p class="card-text mb-3">Cancelación activa de ruido · 40hs autonomía · Driver de 40mm</p>
+              <div class="precio mb-3"><span style="font-size:1rem; opacity:0.6;">$</span>25.000</div>
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <small style="color:rgba(255,255,255,0.35); text-transform:uppercase; font-size:0.68rem;">Cantidad</small>
+                <button class="btn-cant" onclick="cambiarCantidad('cant-3', -1)">−</button>
+                <input type="number" id="cant-3" value="1" min="1" max="99">
+                <button class="btn-cant" onclick="cambiarCantidad('cant-3', 1)">+</button>
+              </div>
+              <button class="btn-agregar" onclick="agregarAlCarrito('Audio Ultra G', 25000, 'cant-3')">Añadir al carrito</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <h2 class="seccion-titulo" id="seccion-carrito">Tu selección hasta ahora</span></h2>
+
+      <div class="cart-section">
+        <div class="cart-empty" id="cart-empty">Todavía no agregaste productos · el carrito está vacío</div>
+        <table id="tabla-carrito" style="display:none">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Unidades</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody id="items-carrito"></tbody>
+        </table>
+        <div class="total-wrap" id="total-wrap" style="display:none">
+          <span class="total-label">Total a abonar</span>
+          <div class="total-numero"><span class="sym">$</span><span id="total-general">0</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast-custom" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
