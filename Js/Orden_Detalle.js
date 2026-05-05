@@ -4,10 +4,12 @@ class Orden_Detalle {
     this.id_Oreden_de = id_Oreden_de;
     this.id_Producto= id_Producto;
     this.Cantidad = Cantidad;
-    this.Precio_Uni = Productos.Precio_Uni;
+    this.Precio_Uni = Precio_Uni;
   }
 
   subtotal(){
     return this.Cantidad * this.Precio_Uni
   }
 }
+
+module.exports = { Orden_Detalle };

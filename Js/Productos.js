@@ -1,4 +1,4 @@
-export class Productos {
+class Productos {
   constructor(Id_P,Precio_Unitario , Stock,Nombre,codigoBarra) {
     this.Id_P = Id_P;
     this.Precio_Unitario = Precio_Unitario;
@@ -12,7 +12,7 @@ export class Productos {
   static agregarProducto(nuevoProducto) {
     if (nuevoProducto instanceof Productos) {
       this.inventario.push(nuevoProducto);
-      return(`Producto "${nuevoProducto.nombre}" agregado al inventario.`);
+      return(`Producto "${nuevoProducto.Nombre}" agregado al inventario.`);
     } else {
       return("El elemento no es un producto válido.");
     }
@@ -27,10 +27,12 @@ export class Productos {
   }
 
   reducirStock(cantidad){
-    this.stock-=cantidad
+    this.Stock-=cantidad
   }
 
 }
+
+module.exports = { Productos };
 
 
 

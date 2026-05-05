@@ -14,15 +14,15 @@ class Orden_Compra {
     this.Detalle=[]
   }
 
-  agregarDetalle(producto){
-    this.Detalle.push(producto)
+  agregarDetalle(detalle){
+    this.Detalle.push(detalle)
   }
 
   calcularTotal(){
-    let subtotal= this.detalles.reduce((acc, det) => acc + det.subtotal(), 0);
+    let subtotal= this.Detalle.reduce((acc, det) => acc + det.subtotal(), 0);
     let porcentajeDescuento=0;
 
-    if (this.Id_Cliente.corporativo){
+    if (this.Id_Cliente && this.Id_Cliente.corporativo){
       porcentajeDescuento=0.10;
     }else if(this.Id_Cupon && this.Id_Cupon.cuponValido){
       porcentajeDescuento=0.05
@@ -31,4 +31,6 @@ class Orden_Compra {
     return subtotal*(1-porcentajeDescuento)
   }
 }
+
+module.exports = { Orden_Compra };
 
