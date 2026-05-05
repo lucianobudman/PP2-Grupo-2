@@ -4,14 +4,49 @@ class Orden_Compra {
     this.Fecha = Fecha;
     this.Total = Total;
     this.Descuento= 0;
-    //estado por defecto al inicio pendiente?
     this.Estado = Estado;
     this.Id_Cliente = Id_Cliente;
     this.Id_Cupon = Id_Cupon;
     this.Iva = Iva;
-
-    
     this.Detalle=[]
+  }
+
+  static ordenes = [];
+
+  static agregarOrden(orden) {
+    if (orden instanceof Orden_Compra) {
+      this.ordenes.push(orden);
+      return `Orden ${orden.id_Oreden_co} agregada.`;
+    } else {
+      return "El elemento no es una orden válida.";
+    }
+  }
+
+  static mostrarOrdenes() {
+    return this.ordenes.map(orden => orden.mostrarResumen());
+  }
+
+  static obtenerOrden(id) {
+    return this.ordenes.find(orden => orden.id_Oreden_co === id);
+  }
+
+  static actualizarOrden(id, nuevosDatos) {
+    const orden = this.ordenes.find(o => o.id_Oreden_co === id);
+    if (orden) {
+      if (nuevosDatos.Estado) orden.Estado = nuevosDatos.Estado;
+      // Agregar otros campos si es necesario
+      return `Orden ${id} actualizada.`;
+    }
+    return "Orden no encontrada.";
+  }
+
+  static eliminarOrden(id) {
+    const index = this.ordenes.findIndex(o => o.id_Oreden_co === id);
+    if (index !== -1) {
+      this.ordenes.splice(index, 1);
+      return `Orden ${id} eliminada.`;
+    }
+    return "Orden no encontrada.";
   }
 
   agregarDetalle(detalle){
@@ -29,6 +64,34 @@ class Orden_Compra {
     }
 
     return subtotal*(1-porcentajeDescuento)
+  }
+
+  mostrarResumen(){
+    const subtotal = this.Detalle.reduce((acc, det) => acc + det.subtotal(), 0);
+    const total = this.calcularTotal();
+    const descuentoAplicado = subtotal - total;
+    const porcentajeDescuento = this.Id_Cliente && this.Id_Cliente.corporativo ? 10 : (this.Id_Cupon && this.Id_Cupon.cuponValido ? 5 : 0);
+    
+    return {
+      idOrden: this.id_Oreden_co,
+      fecha: this.Fecha,
+      estado: this.Estado,
+      cliente: this.Id_Cliente ? `${this.Id_Cliente.nombre} ${this.Id_Cliente.apellido}` : 'Desconocido',
+      corporativo: this.Id_Cliente ? this.Id_Cliente.corporativo : false,
+      cupon: this.Id_Cupon ? this.Id_Cupon.codigo : null,
+      detalles: this.Detalle.map(det => ({
+        idProducto: det.id_Producto,
+        precioUnitario: det.Precio_Uni,
+        cantidad: det.Cantidad,
+        subtotal: det.subtotal()
+      })),
+      resumen: {
+        subtotal: subtotal,
+        descuentoAplicado: descuentoAplicado,
+        porcentajeDescuento: porcentajeDescuento,
+        total: total
+      }
+    };
   }
 }
 

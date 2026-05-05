@@ -137,6 +137,9 @@ app.post('/api/checkout', (req, res) => {
   const descuentoAplicado = subtotal - orden.Total;
   const porcentajeDescuento = cliente.corporativo ? 10 : (cupon ? cupon.descuento : 0);
   
+  // Agregar la orden al arreglo
+  Orden_Compra.agregarOrden(orden);
+  
   res.json({ 
     message: 'Orden creada',
     orden,
@@ -150,6 +153,36 @@ app.post('/api/checkout', (req, res) => {
       codigoCupon: cupon ? cupon.codigo : null
     }
   });
+});
+
+// Rutas para Ordenes
+app.get('/api/ordenes', (req, res) => {
+  res.json(Orden_Compra.mostrarOrdenes());
+});
+
+app.post('/api/ordenes', (req, res) => {
+  const { idOrden, fecha, total, estado, iva, descuento, clienteId, cupon } = req.body;
+  const cliente = Clientes.clientes.find(c => c.id_ci === clienteId);
+  const nuevaOrden = new Orden_Compra(idOrden, new Date(fecha), total, estado, iva, descuento, cliente, cupon);
+  Orden_Compra.agregarOrden(nuevaOrden);
+  res.status(201).json({ message: 'Orden agregada', orden: nuevaOrden.mostrarResumen() });
+});
+
+app.put('/api/ordenes/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const { estado } = req.body; // Solo actualizar estado por ejemplo
+  const resultado = Orden_Compra.actualizarOrden(id, { Estado: estado });
+  if (resultado.includes('actualizada')) {
+    res.json({ message: resultado, orden: Orden_Compra.obtenerOrden(id).mostrarResumen() });
+  } else {
+    res.status(404).json({ message: resultado });
+  }
+});
+
+app.delete('/api/ordenes/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const resultado = Orden_Compra.eliminarOrden(id);
+  res.json({ message: resultado });
 });
 
 // Encendemos el servidor 
