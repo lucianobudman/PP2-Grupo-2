@@ -127,6 +127,8 @@ app.post('/api/checkout', (req, res) => {
       producto.reducirStock(item.cantidad);
     }
   });
+
+
   
   // Calcular subtotal antes del descuento
   const subtotal = orden.Detalle.reduce((acc, det) => acc + det.subtotal(), 0);
@@ -226,6 +228,49 @@ app.delete('/api/cupones/:id', (req, res) => {
 
   Cupones.cupones.splice(index, 1);
   res.json({ message: 'Cupón eliminado' });
+});
+
+  // Esta es la ruta que Thunder Client buscará
+app.post('/api/Orden_Detalle', (req, res) => {
+    const { registros } = req.body;
+
+    // 1. Transformamos los datos crudos a objetos de la clase
+    const objetos = Orden_Detalle.CambiarRegistros(registros);
+
+    // 2. Agrupamos para mostrar el formato que querías
+    const respuesta = Orden_Detalle.mostrarDetallesPorOrden(objetos);
+
+    res.status(201).json({
+        mensaje: "Alta exitosa",
+        resultado: respuesta
+    });
+});
+
+
+app.put('/api/Orden_Detalle', (req, res) => {
+    const { registros } = req.body;
+
+    // 1. Convertimos los registros planos en objetos de la clase
+    const objetos = Orden_Detalle.CambiarRegistros(registros);
+
+    // 2. Llamamos al método DESDE LA CLASE, pasando el array de objetos
+    const resultado = Orden_Detalle.mostrarDetallesPorOrden(objetos);
+
+    return res.status(200).json({
+        mensaje: "Registros procesados con éxito",
+        datos: resultado
+    });
+});
+
+
+app.delete('/api/Orden_Detalle/:id', (req, res) => {
+    const id = req.params.id; // Obtiene el ID de la URL
+
+    if (Orden_Detalle.borrar(id)) {
+        return res.status(200).json({
+            mensaje: `Registro ${id} eliminado correctamente`
+        });
+    }
 });
 
 // Encendemos el servidor 
