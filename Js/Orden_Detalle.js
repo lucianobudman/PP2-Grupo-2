@@ -43,10 +43,10 @@ class Orden_Detalle {
     ));
   }
 
-  static borrar(id) {
-    console.log(`Eliminando registro con ID: ${id}`);
-  
-    return true;
+static borrar(id) {
+  // TODO: implementar cuando haya base de datos
+  console.log(`Eliminando registro con ID: ${id}`);
+  return true;
   }
 
 }
