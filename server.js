@@ -9,6 +9,9 @@ app.use(express.json());
 // Le decimos al servidor que exponga públicamente los archivos de la carpeta "public" 
 app.use(express.static('public')); 
 
+// ACA CONECTAMOS CON RUTAS DE PRODUCTOS
+//app.use('/api/productos', productosRouter);
+
 // Importar clases
 const { Productos } = require('./Js/Productos.js');
 const { Orden_Compra } = require('./Js/Orden_Compra.js');
@@ -127,8 +130,6 @@ app.post('/api/checkout', (req, res) => {
       producto.reducirStock(item.cantidad);
     }
   });
-
-
   
   // Calcular subtotal antes del descuento
   const subtotal = orden.Detalle.reduce((acc, det) => acc + det.subtotal(), 0);
@@ -185,6 +186,9 @@ app.put('/api/ordenes/:id', (req, res) => {
 app.delete('/api/ordenes/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const resultado = Orden_Compra.eliminarOrden(id);
+  if (!resultado) {
+    return res.status(404).json({ message: 'Orden no encontrada' });
+  }
   res.json({ message: resultado });
 });
 
@@ -264,13 +268,13 @@ app.put('/api/Orden_Detalle', (req, res) => {
 
 
 app.delete('/api/Orden_Detalle/:id', (req, res) => {
-    const id = req.params.id; // Obtiene el ID de la URL
-
-    if (Orden_Detalle.borrar(id)) {
-        return res.status(200).json({
-            mensaje: `Registro ${id} eliminado correctamente`
-        });
-    }
+  const id = req.params.id;
+  if (Orden_Detalle.borrar(id)) {
+    return res.status(200).json({
+      mensaje: `Registro ${id} eliminado correctamente`
+    });
+  }
+  return res.status(404).json({ mensaje: `Registro ${id} no encontrado` });
 });
 
 // Encendemos el servidor 
