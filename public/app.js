@@ -232,7 +232,7 @@ async function finalizarCompra() {
       return;
     }
 
-    const response = await fetch('/api/checkout', {
+    const response = await fetch('/api/ordenes/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
