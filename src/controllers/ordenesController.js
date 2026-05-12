@@ -8,15 +8,14 @@ const getAll = (req, res) => {
 };
 
 const getById = (req, res) => {
-  const id = parseInt(req.params.id);
-  const orden = Orden_Compra.obtenerOrden(id);
+  const orden = Orden_Compra.obtenerOrden(parseInt(req.params.id));
   if (!orden) return res.status(404).json({ message: 'Orden no encontrada' });
   res.json(orden.mostrarResumen());
 };
 
 const create = (req, res) => {
   const { idOrden, fecha, total, estado, iva, descuento, clienteId, cupon } = req.body;
-  const cliente = Clientes.clientes.find(c => c.id_ci === clienteId);
+  const cliente = Clientes.obtenerCliente(clienteId);
   if (!cliente) return res.status(404).json({ message: 'Cliente no encontrado' });
 
   const nuevaOrden = new Orden_Compra(idOrden, new Date(fecha), total, estado, iva, descuento, cliente, cupon);
@@ -25,20 +24,13 @@ const create = (req, res) => {
 };
 
 const update = (req, res) => {
-  const id = parseInt(req.params.id);
-  const { estado } = req.body;
-  const resultado = Orden_Compra.actualizarOrden(id, { Estado: estado });
-
-  if (resultado.includes('actualizada')) {
-    res.json({ message: resultado, orden: Orden_Compra.obtenerOrden(id).mostrarResumen() });
-  } else {
-    res.status(404).json({ message: resultado });
-  }
+  const orden = Orden_Compra.actualizarOrden(parseInt(req.params.id), req.body);
+  if (!orden) return res.status(404).json({ message: 'Orden no encontrada' });
+  res.json({ message: 'Orden actualizada', orden: orden.mostrarResumen() });
 };
 
 const remove = (req, res) => {
-  const id = parseInt(req.params.id);
-  const resultado = Orden_Compra.eliminarOrden(id);
+  const resultado = Orden_Compra.eliminarOrden(parseInt(req.params.id));
   if (!resultado) return res.status(404).json({ message: 'Orden no encontrada' });
   res.json({ message: resultado });
 };
@@ -46,7 +38,7 @@ const remove = (req, res) => {
 const checkout = (req, res) => {
   const { items, clienteId, cuponCode } = req.body;
 
-  const cliente = Clientes.clientes.find(c => c.id_ci === clienteId);
+  const cliente = Clientes.obtenerCliente(clienteId);
   if (!cliente) return res.status(404).json({ message: 'Cliente no encontrado' });
 
   let cupon = null;

@@ -5,8 +5,7 @@ const getAll = (req, res) => {
 };
 
 const getById = (req, res) => {
-  const id = parseInt(req.params.id);
-  const producto = Productos.inventario.find(p => p.Id_P === id);
+  const producto = Productos.obtenerProducto(parseInt(req.params.id));
   if (!producto) return res.status(404).json({ message: 'Producto no encontrado' });
   res.json(producto);
 };
@@ -19,26 +18,15 @@ const create = (req, res) => {
 };
 
 const update = (req, res) => {
-  const id = parseInt(req.params.id);
-  const producto = Productos.inventario.find(p => p.Id_P === id);
+  const producto = Productos.actualizarProducto(parseInt(req.params.id), req.body);
   if (!producto) return res.status(404).json({ message: 'Producto no encontrado' });
-
-  const { Precio_Unitario, Stock, Nombre, codigoBarra } = req.body;
-  if (Precio_Unitario !== undefined) producto.Precio_Unitario = Precio_Unitario;
-  if (Stock !== undefined) producto.Stock = Stock;
-  if (Nombre !== undefined) producto.Nombre = Nombre;
-  if (codigoBarra !== undefined) producto.codigoBarra = codigoBarra;
-
   res.json({ message: 'Producto actualizado', producto });
 };
 
 const remove = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = Productos.inventario.findIndex(p => p.Id_P === id);
-  if (index === -1) return res.status(404).json({ message: 'Producto no encontrado' });
-
-  Productos.inventario.splice(index, 1);
-  res.json({ message: 'Producto eliminado' });
+  const resultado = Productos.eliminarProducto(parseInt(req.params.id));
+  if (!resultado) return res.status(404).json({ message: 'Producto no encontrado' });
+  res.json({ message: resultado });
 };
 
 module.exports = { getAll, getById, create, update, remove };

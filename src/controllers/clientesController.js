@@ -5,8 +5,7 @@ const getAll = (req, res) => {
 };
 
 const getById = (req, res) => {
-  const id = parseInt(req.params.id);
-  const cliente = Clientes.clientes.find(c => c.id_ci === id);
+  const cliente = Clientes.obtenerCliente(parseInt(req.params.id));
   if (!cliente) return res.status(404).json({ message: 'Cliente no encontrado' });
   res.json(cliente);
 };
@@ -19,25 +18,15 @@ const create = (req, res) => {
 };
 
 const update = (req, res) => {
-  const id = parseInt(req.params.id);
-  const cliente = Clientes.clientes.find(c => c.id_ci === id);
+  const cliente = Clientes.actualizarCliente(parseInt(req.params.id), req.body);
   if (!cliente) return res.status(404).json({ message: 'Cliente no encontrado' });
-
-  const { nombre, apellido, corporativo } = req.body;
-  if (nombre !== undefined) cliente.nombre = nombre;
-  if (apellido !== undefined) cliente.apellido = apellido;
-  if (corporativo !== undefined) cliente.corporativo = corporativo;
-
   res.json({ message: 'Cliente actualizado', cliente });
 };
 
 const remove = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = Clientes.clientes.findIndex(c => c.id_ci === id);
-  if (index === -1) return res.status(404).json({ message: 'Cliente no encontrado' });
-
-  Clientes.clientes.splice(index, 1);
-  res.json({ message: 'Cliente eliminado' });
+  const resultado = Clientes.eliminarCliente(parseInt(req.params.id));
+  if (!resultado) return res.status(404).json({ message: 'Cliente no encontrado' });
+  res.json({ message: resultado });
 };
 
 module.exports = { getAll, getById, create, update, remove };

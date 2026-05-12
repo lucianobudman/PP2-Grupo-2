@@ -1,14 +1,14 @@
 class Orden_Compra {
-  constructor(id_Oreden_co, Fecha,Total,Estado,Iva,Descuento,Id_Cliente,Id_Cupon) {
+  constructor(id_Oreden_co, Fecha, Total, Estado, Iva, Descuento, Id_Cliente, Id_Cupon) {
     this.id_Oreden_co = id_Oreden_co;
     this.Fecha = Fecha;
     this.Total = Total;
-    this.Descuento= 0;
+    this.Descuento = 0;
     this.Estado = Estado;
     this.Id_Cliente = Id_Cliente;
     this.Id_Cupon = Id_Cupon;
     this.Iva = Iva;
-    this.Detalle=[]
+    this.Detalle = [];
   }
 
   static ordenes = [];
@@ -22,56 +22,49 @@ class Orden_Compra {
     }
   }
 
-  static mostrarOrdenes() {
-    return this.ordenes.map(orden => orden.mostrarResumen());
-  }
-
   static obtenerOrden(id) {
-    return this.ordenes.find(orden => orden.id_Oreden_co === id);
+    return this.ordenes.find(o => o.id_Oreden_co === id) || null;
   }
 
-  static actualizarOrden(id, nuevosDatos) {
+  static actualizarOrden(id, datos) {
     const orden = this.ordenes.find(o => o.id_Oreden_co === id);
-    if (orden) {
-      if (nuevosDatos.Estado) orden.Estado = nuevosDatos.Estado;
-      // Agregar otros campos si es necesario
-      return `Orden ${id} actualizada.`;
-    }
-    return "Orden no encontrada.";
+    if (!orden) return null;
+    if (datos.Estado !== undefined) orden.Estado = datos.Estado;
+    return orden;
   }
 
   static eliminarOrden(id) {
     const index = this.ordenes.findIndex(o => o.id_Oreden_co === id);
-    if (index !== -1) {
-      this.ordenes.splice(index, 1);
-      return `Orden ${id} eliminada.`;
+    if (index === -1) return null;
+    this.ordenes.splice(index, 1);
+    return `Orden ${id} eliminada.`;
+  }
+
+  static mostrarOrdenes() {
+    return this.ordenes.map(orden => orden.mostrarResumen());
+  }
+
+  agregarDetalle(detalle) {
+    this.Detalle.push(detalle);
+  }
+
+  calcularTotal() {
+    let subtotal = this.Detalle.reduce((acc, det) => acc + det.subtotal(), 0);
+    let porcentajeDescuento = 0;
+    if (this.Id_Cliente && this.Id_Cliente.corporativo) {
+      porcentajeDescuento = 0.10;
+    } else if (this.Id_Cupon && this.Id_Cupon.cuponValido) {
+      porcentajeDescuento = 0.05;
     }
-    return "Orden no encontrada.";
+    return subtotal * (1 - porcentajeDescuento);
   }
 
-  agregarDetalle(detalle){
-    this.Detalle.push(detalle)
-  }
-
-  calcularTotal(){
-    let subtotal= this.Detalle.reduce((acc, det) => acc + det.subtotal(), 0);
-    let porcentajeDescuento=0;
-
-    if (this.Id_Cliente && this.Id_Cliente.corporativo){
-      porcentajeDescuento=0.10;
-    }else if(this.Id_Cupon && this.Id_Cupon.cuponValido){
-      porcentajeDescuento=0.05
-    }
-
-    return subtotal*(1-porcentajeDescuento)
-  }
-
-  mostrarResumen(){
+  mostrarResumen() {
     const subtotal = this.Detalle.reduce((acc, det) => acc + det.subtotal(), 0);
     const total = this.calcularTotal();
     const descuentoAplicado = subtotal - total;
     const porcentajeDescuento = this.Id_Cliente && this.Id_Cliente.corporativo ? 10 : (this.Id_Cupon && this.Id_Cupon.cuponValido ? 5 : 0);
-    
+
     return {
       idOrden: this.id_Oreden_co,
       fecha: this.Fecha,
@@ -86,14 +79,13 @@ class Orden_Compra {
         subtotal: det.subtotal()
       })),
       resumen: {
-        subtotal: subtotal,
-        descuentoAplicado: descuentoAplicado,
-        porcentajeDescuento: porcentajeDescuento,
-        total: total
+        subtotal,
+        descuentoAplicado,
+        porcentajeDescuento,
+        total
       }
     };
   }
 }
 
 module.exports = { Orden_Compra };
-
