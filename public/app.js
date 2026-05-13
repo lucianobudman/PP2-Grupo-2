@@ -79,7 +79,7 @@ function mostrarToast(msg) {
   const toast = document.getElementById('toast');
   toast.textContent = msg;
   toast.classList.add('visible');
-  setTimeout(() => toast.classList.remove('visible'), 2500);
+  setTimeout(() => toast.classList.remove('visible'), 10000);
 }
 
 function scrollAlCarrito() {

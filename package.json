@@ -19,7 +19,10 @@
   "homepage": "https://github.com/lucianobudman/PP2-Grupo-2#readme",
   "type": "commonjs",
   "dependencies": {
+    "dotenv": "^17.4.2",
     "expres": "^0.0.5",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "sequelize": "^6.37.8",
+    "sqlite3": "^6.0.1"
   }
 }
