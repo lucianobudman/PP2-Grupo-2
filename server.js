@@ -1,6 +1,23 @@
-const express = require('express');
-const app = express();
-const PORT = 3000;
+require('dotenv').config(); // Cargar variables de entorno 
+const express = require('express'); 
+const app = express(); 
+const sequelize = require('./src/config/database'); 
+const productosRouter = require('./src/routes/productosRoutes'); 
+ 
+app.use(express.json()); 
+app.use(express.static('public'));
+
+app.use('/api/productos', productosRouter); 
+// Sincroniza la base de datos y enciende el servidor 
+const PORT = process.env.PORT || 3000; // Usa el puerto del .env, o el 3000 por defecto 
+sequelize.sync() 
+.then(() => { 
+console.log('✅ Base de datos conectada y sincronizada'); 
+app.listen(PORT, () => { 
+console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`); 
+}); 
+}) 
+.catch((err) => console.log('❌ Error de conexión:', err));
 
 const { Clientes } = require('./Js/Clientes.js');
 const { Productos } = require('./Js/Productos.js');

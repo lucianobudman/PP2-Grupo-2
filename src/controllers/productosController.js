@@ -1,32 +1,63 @@
-const { Productos } = require('../../Js/Productos.js');
+const Producto = require('../models/Producto'); // Importamos el molde de la BD 
+const productosController = {
 
-const getAll = (req, res) => {
-  res.json(Productos.mostrarInventario());
-};
-
-const getById = (req, res) => {
-  const producto = Productos.obtenerProducto(parseInt(req.params.id));
-  if (!producto) return res.status(404).json({ message: 'Producto no encontrado' });
-  res.json(producto);
-};
-
-const create = (req, res) => {
-  const { Id_P, Precio_Unitario, Stock, Nombre, codigoBarra } = req.body;
-  const nuevoProducto = new Productos(Id_P, Precio_Unitario, Stock, Nombre, codigoBarra);
-  Productos.agregarProducto(nuevoProducto);
-  res.status(201).json({ message: 'Producto agregado', producto: nuevoProducto });
-};
-
-const update = (req, res) => {
-  const producto = Productos.actualizarProducto(parseInt(req.params.id), req.body);
-  if (!producto) return res.status(404).json({ message: 'Producto no encontrado' });
-  res.json({ message: 'Producto actualizado', producto });
-};
-
-const remove = (req, res) => {
-  const resultado = Productos.eliminarProducto(parseInt(req.params.id));
-  if (!resultado) return res.status(404).json({ message: 'Producto no encontrado' });
-  res.json({ message: resultado });
-};
-
-module.exports = { getAll, getById, create, update, remove };
+getAll: async (req, res) => { 
+        try { 
+            const productos = await Producto.findAll(); // SELECT * FROM Productos 
+            res.json(productos); 
+        } catch (error) { 
+            res.status(500).json({ error: "Error al consultar la base de datos" }); 
+        } 
+    }, 
+ 
+    getById: async (req, res) => { 
+        try { 
+            const producto = await Producto.findByPk(req.params.id); // Buscar por Primary Key (ID) 
+            if (producto) { 
+                res.json(producto); 
+            } else { 
+                res.status(404).json({ error: "Producto no encontrado" }); 
+            } 
+        } catch (error) { 
+            res.status(500).json({ error: "Error en el servidor" }); 
+        } 
+    }, 
+ 
+    create: async (req, res) => { 
+        try { 
+            const nuevoProducto = await Producto.create(req.body); // INSERT INTO... 
+            res.status(201).json({ mensaje: "Creado con éxito", producto: nuevoProducto }); 
+        } catch (error) { 
+            res.status(400).json({ error: "Datos inválidos o incompletos" }); 
+        } 
+    }, 
+ 
+    update: async (req, res) => { 
+        try { 
+            // Buscamos y actualizamos en base al ID que viene en la URL (req.params.id) 
+            const [actualizado] = await Producto.update(req.body, { where: { id: req.params.id } }); 
+            if (actualizado) { 
+                res.json({ mensaje: "Producto actualizado correctamente" }); 
+            } else {
+              res.status(404).json({ error: "No se encontró el producto a actualizar" }); 
+            } 
+        } catch (error) { 
+            res.status(500).json({ error: "Error al actualizar" }); 
+        } 
+    }, 
+ 
+    delete: async (req, res) => { 
+        try { 
+            const borrados = await Producto.destroy({ where: { id: req.params.id } }); 
+            if (borrados > 0) { 
+                res.json({ mensaje: "Producto eliminado correctamente" }); 
+            } else { 
+                res.status(404).json({ error: "El producto no existe" }); 
+            } 
+        } catch (error) { 
+            res.status(500).json({ error: "Error al intentar eliminar" }); 
+        } 
+    } 
+}; 
+ 
+module.exports = productosController; 
