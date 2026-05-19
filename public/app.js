@@ -190,20 +190,20 @@ function renderProductos(productos) {
     col.innerHTML = `
       <div class="card h-100 p-3">
         <div class="img-wrap">
-          <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&q=80" class="card-img-top" alt="${producto.Nombre}" onerror="this.style.display='none'">
+          <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&q=80" class="card-img-top" alt="${producto.nombre}" onerror="this.style.display='none'">
         </div>
         <div class="card-body p-0">
           <span class="badge-custom badge-nuevo d-inline-block mb-2">Disponible</span>
-          <h5 class="card-title">${producto.Nombre}</h5>
+          <h5 class="card-title">${producto.nombre}</h5>
           <p class="card-text mb-3">Producto de alta calidad</p>
-          <div class="precio mb-3"><span style="font-size:1rem; opacity:0.6;">$</span>${producto.Precio_Unitario.toLocaleString('es-AR')}</div>
+          <div class="precio mb-3"><span style="font-size:1rem; opacity:0.6;">$</span>${producto.precio.toLocaleString('es-AR')}</div>
           <div class="d-flex align-items-center gap-2 mb-3">
             <small style="color:rgba(255,255,255,0.35); text-transform:uppercase; font-size:0.68rem;">Cantidad</small>
             <button class="btn-cant" onclick="cambiarCantidad('cant-${index}', -1)">−</button>
-            <input type="number" id="cant-${index}" value="1" min="1" max="${producto.Stock}">
+            <input type="number" id="cant-${index}" value="1" min="1" max="${producto.stock}">
             <button class="btn-cant" onclick="cambiarCantidad('cant-${index}', 1)">+</button>
           </div>
-          <button class="btn-agregar" onclick="agregarAlCarrito('${producto.Nombre}', ${producto.Precio_Unitario}, 'cant-${index}')">Añadir al carrito</button>
+          <button class="btn-agregar" onclick="agregarAlCarrito('${producto.nombre}', ${producto.precio}, 'cant-${index}')">Añadir al carrito</button>
         </div>
       </div>
     `;
