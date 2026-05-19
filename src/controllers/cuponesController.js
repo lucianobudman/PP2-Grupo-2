@@ -1,32 +1,40 @@
-const { Cupones } = require('../../Js/Cupones.js');
+const Cupon = require('../models/Cupon');
 
-const getAll = (req, res) => {
-  res.json(Cupones.mostrarCupones());
+const getAll = async (req, res) => {
+  try {
+    res.json(await Cupon.findAll());
+  } catch { res.status(500).json({ error: 'Error al consultar' }); }
 };
 
-const getById = (req, res) => {
-  const cupon = Cupones.obtenerCupon(parseInt(req.params.id));
-  if (!cupon) return res.status(404).json({ message: 'Cupón no encontrado' });
-  res.json(cupon);
+const getById = async (req, res) => {
+  try {
+    const cupon = await Cupon.findByPk(req.params.id);
+    if (cupon) res.json(cupon);
+    else res.status(404).json({ error: 'Cupón no encontrado' });
+  } catch { res.status(500).json({ error: 'Error en el servidor' }); }
 };
 
-const create = (req, res) => {
-  const { id_Cu, fecha_validez, codigo } = req.body;
-  const nuevoCupon = new Cupones(id_Cu, fecha_validez, codigo);
-  Cupones.agregarCupon(nuevoCupon);
-  res.status(201).json({ message: 'Cupón agregado', cupon: nuevoCupon });
+const create = async (req, res) => {
+  try {
+    const cupon = await Cupon.create(req.body);
+    res.status(201).json({ mensaje: 'Cupón creado', cupon });
+  } catch { res.status(400).json({ error: 'Datos inválidos' }); }
 };
 
-const update = (req, res) => {
-  const cupon = Cupones.actualizarCupon(parseInt(req.params.id), req.body);
-  if (!cupon) return res.status(404).json({ message: 'Cupón no encontrado' });
-  res.json({ message: 'Cupón actualizado', cupon });
+const update = async (req, res) => {
+  try {
+    const [actualizado] = await Cupon.update(req.body, { where: { id: req.params.id } });
+    if (actualizado) res.json({ mensaje: 'Cupón actualizado' });
+    else res.status(404).json({ error: 'Cupón no encontrado' });
+  } catch { res.status(500).json({ error: 'Error al actualizar' }); }
 };
 
-const remove = (req, res) => {
-  const resultado = Cupones.eliminarCupon(parseInt(req.params.id));
-  if (!resultado) return res.status(404).json({ message: 'Cupón no encontrado' });
-  res.json({ message: resultado });
+const remove = async (req, res) => {
+  try {
+    const borrados = await Cupon.destroy({ where: { id: req.params.id } });
+    if (borrados > 0) res.json({ mensaje: 'Cupón eliminado' });
+    else res.status(404).json({ error: 'Cupón no encontrado' });
+  } catch { res.status(500).json({ error: 'Error al eliminar' }); }
 };
 
 module.exports = { getAll, getById, create, update, remove };

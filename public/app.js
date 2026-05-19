@@ -115,7 +115,7 @@ function renderClientes(clientes) {
   
   clientes.forEach(cliente => {
     const option = document.createElement('option');
-    option.value = cliente.id_ci;
+    option.value = cliente.id;
     option.textContent = `${cliente.nombre} ${cliente.apellido}${cliente.corporativo ? ' (Corporativo)' : ''}`;
     select.appendChild(option);
   });
@@ -140,7 +140,7 @@ function loginCliente() {
   fetch('/api/clientes')
     .then(r => r.json())
     .then(clientes => {
-      clienteActivo = clientes.find(c => c.id_ci === clienteId);
+      clienteActivo = clientes.find(c => c.id === clienteId);
       if (clienteActivo) {
         loginStatus.textContent = `Conectado como ${clienteActivo.nombre} ${clienteActivo.apellido}${clienteActivo.corporativo ? ' (Corporativo)' : ''}`;
       } else {
@@ -239,7 +239,7 @@ async function finalizarCompra() {
       },
       body: JSON.stringify({
         items: carrito,
-        clienteId: clienteActivo.id_ci,
+        clienteId: clienteActivo.id,
         cuponCode: cuponActivo
       })
     });

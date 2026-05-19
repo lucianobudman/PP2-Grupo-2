@@ -1,25 +1,38 @@
-const { Orden_Detalle } = require('../../Js/Orden_Detalle.js');
+const OrdenDetalle = require('../models/OrdenDetalle');
 
-const create = (req, res) => {
-  const { registros } = req.body;
-  const objetos = Orden_Detalle.CambiarRegistros(registros);
-  const respuesta = Orden_Detalle.mostrarDetallesPorOrden(objetos);
-  res.status(201).json({ mensaje: 'Alta exitosa', resultado: respuesta });
+const getAll = async (req, res) => {
+  try {
+    res.json(await OrdenDetalle.findAll());
+  } catch { res.status(500).json({ error: 'Error al consultar' }); }
 };
 
-const update = (req, res) => {
-  const { registros } = req.body;
-  const objetos = Orden_Detalle.CambiarRegistros(registros);
-  const resultado = Orden_Detalle.mostrarDetallesPorOrden(objetos);
-  res.status(200).json({ mensaje: 'Registros procesados con éxito', datos: resultado });
+const create = async (req, res) => {
+  try {
+    const detalle = await OrdenDetalle.create(req.body);
+    res.status(201).json({ mensaje: 'Detalle creado', detalle });
+  } catch { res.status(400).json({ error: 'Datos inválidos' }); }
 };
 
-const remove = (req, res) => {
-  const id = req.params.id;
-  if (Orden_Detalle.borrar(id)) {
-    return res.status(200).json({ mensaje: `Registro ${id} eliminado correctamente` });
-  }
-  return res.status(404).json({ mensaje: `Registro ${id} no encontrado` });
+// 1. AGREGÁ ESTA FUNCIÓN (Faltaba el update)
+const update = async (req, res) => {
+  try {
+    // Nota: Como en tu ruta usás router.put('/', ...), 
+    // asumimos que el id viene dentro de req.body
+    const { id } = req.body; 
+    const [actualizados] = await OrdenDetalle.update(req.body, { where: { id } });
+    
+    if (actualizados > 0) res.json({ mensaje: 'Detalle actualizado' });
+    else res.status(404).json({ error: 'Detalle no encontrado' });
+  } catch { res.status(500).json({ error: 'Error al actualizar' }); }
 };
 
-module.exports = { create, update, remove };
+const remove = async (req, res) => {
+  try {
+    const borrados = await OrdenDetalle.destroy({ where: { id: req.params.id } });
+    if (borrados > 0) res.json({ mensaje: 'Detalle eliminado' });
+    else res.status(404).json({ error: 'Detalle no encontrado' });
+  } catch { res.status(500).json({ error: 'Error al eliminar' }); }
+};
+
+// 2. AGREGALO ACÁ EN LOS EXPORTS
+module.exports = { getAll, create, update, remove };
