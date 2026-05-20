@@ -1,6 +1,116 @@
 let carrito = [];
 let clienteActivo = null;
 let cuponActivo = null;
+// Variable global para manejar el modal mediante Bootstrap
+let bsLoginModal;
+
+// 1. Modificamos la acción del botón "Finalizar" original del carrito
+// function finalizarCompra() {
+//   // Inicializamos el modal de Bootstrap si no está creado
+//   if (!bsLoginModal) {
+//     bsLoginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+//   }
+  
+//   // Abrimos el modal automáticamente
+//   bsLoginModal.show();
+  
+//   // Cargamos los clientes dinámicamente si el select está vacío
+//   cargarClientes();
+// }
+
+function finalizarCompra() {
+  if (carrito.length === 0) {
+    mostrarToast('El carrito está vacío');
+    return;
+  }
+
+  // Si el cliente no interactuó con el modal ni se validó, lo abrimos
+  if (!clienteActivo) {
+    if (!bsLoginModal) {
+      bsLoginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    }
+    bsLoginModal.show();
+    cargarClientes();
+    return; // Frenamos aquí hasta que toque "CONFIRMAR ORDEN"
+  }
+
+  // --- TU LÓGICA ORIGINAL DE ENVÍO A BASE DE DATOS (INTACTA) ---
+  fetch('/api/ordenes/checkout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      items: carrito,
+      clienteId: clienteActivo.id,
+      cuponCode: cuponActivo
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+    const resumen = result.resumen;
+    let mensaje = '✅ Compra finalizada exitosamente';
+    
+    if (resumen.descuentoAplicado > 0) {
+      mensaje += `\n💰 Subtotal: $${resumen.subtotal.toLocaleString('es-AR')}`;
+      mensaje += `\n🎁 Descuento (${resumen.porcentajeDescuento}%): -$${resumen.descuentoAplicado.toLocaleString('es-AR')}`;
+      mensaje += `\n💳 Total: $${resumen.total.toLocaleString('es-AR')}`;
+    } else {
+      mensaje += `\n💳 Total: $${resumen.total.toLocaleString('es-AR')}`;
+    }
+    
+    mostrarToast(mensaje);
+    if (bsLoginModal) bsLoginModal.hide(); // Cerramos modal al ganar exitosamente
+
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) backdrop.remove();
+    document.body.style.overflow = ''; // Devuelve el scroll a la página
+    document.body.classList.remove('modal-open');
+    carrito = [];
+    clienteActivo = null; // Reseteamos sesión para la próxima compra
+    actualizarCarrito();
+  })
+  .catch(error => {
+    console.error('Error finalizando compra:', error);
+    mostrarToast('Error al finalizar la compra');
+  });
+}
+
+// 2. Nueva función para cuando el usuario presiona "CONFIRMAR ORDEN" dentro del modal
+function procesarCompraFinal() {
+  const select = document.getElementById('cliente-select');
+  const clienteId = parseInt(select.value);
+  const loginStatus = document.getElementById('login-status');
+
+  if (!clienteId) {
+    loginStatus.textContent = 'Error: Debes seleccionar un cliente para finalizar.';
+    loginStatus.style.color = '#ff6060';
+    return;
+  }
+
+  // Ejecutamos tu lógica de login existente usando la API
+  fetch('/api/clientes')
+    .then(r => r.json())
+    .then(clientes => {
+      clienteActivo = clientes.find(c => c.id === clienteId);
+      
+      if (clienteActivo) {
+        // Aquí los datos del carrito están listos junto con el clienteActivo
+        alert(`¡Compra procesada con éxito para ${clienteActivo.nombre}!\nTu orden está en camino.`);
+        
+        // Cerramos el modal de forma limpia
+        bsLoginModal.hide();
+        
+        // Aquí podrías agregar tu lógica para vaciar el carrito (ej. carrito = []; actualizarCarrito();)
+      } else {
+        loginStatus.textContent = 'Cliente no encontrado en la base de datos.';
+      }
+    })
+    .catch(error => {
+      console.error('Error al procesar la compra:', error);
+      loginStatus.textContent = 'Error de conexión con el servidor.';
+    });
+}
 
 function cambiarCantidad(id, delta) {
   const input = document.getElementById(id);
@@ -211,60 +321,60 @@ function renderProductos(productos) {
   });
 }
 
-// Finalizar compra
-async function finalizarCompra() {
-  if (carrito.length === 0) {
-    mostrarToast('El carrito está vacío');
-    return;
-  }
+// // Finalizar compra
+// async function finalizarCompra() {
+//   if (carrito.length === 0) {
+//     mostrarToast('El carrito está vacío');
+//     return;
+//   }
 
-  const clienteSelect = document.getElementById('cliente-select');
-  const clienteId = parseInt(clienteSelect.value);
+//   const clienteSelect = document.getElementById('cliente-select');
+//   const clienteId = parseInt(clienteSelect.value);
   
-  if (!clienteId) {
-    mostrarToast('Por favor selecciona un cliente');
-    return;
-  }
+//   if (!clienteId) {
+//     mostrarToast('Por favor selecciona un cliente');
+//     return;
+//   }
 
-  try {
-    if (!clienteActivo) {
-      mostrarToast('Por favor inicia sesión como cliente antes de finalizar la compra');
-      return;
-    }
+//   try {
+//     if (!clienteActivo) {
+//       mostrarToast('Por favor inicia sesión como cliente antes de finalizar la compra');
+//       return;
+//     }
 
-    const response = await fetch('/api/ordenes/checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        items: carrito,
-        clienteId: clienteActivo.id,
-        cuponCode: cuponActivo
-      })
-    });
-    const result = await response.json();
+//     const response = await fetch('/api/ordenes/checkout', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({
+//         items: carrito,
+//         clienteId: clienteActivo.id,
+//         cuponCode: cuponActivo
+//       })
+//     });
+//     const result = await response.json();
     
-    // Mostrar mensaje detallado con descuento
-    const resumen = result.resumen;
-    let mensaje = '✅ Compra finalizada exitosamente';
+//     // Mostrar mensaje detallado con descuento
+//     const resumen = result.resumen;
+//     let mensaje = '✅ Compra finalizada exitosamente';
     
-    if (resumen.descuentoAplicado > 0) {
-      mensaje += `\n💰 Subtotal: $${resumen.subtotal.toLocaleString('es-AR')}`;
-      mensaje += `\n🎁 Descuento (${resumen.porcentajeDescuento}%): -$${resumen.descuentoAplicado.toLocaleString('es-AR')}`;
-      mensaje += `\n💳 Total: $${resumen.total.toLocaleString('es-AR')}`;
-    } else {
-      mensaje += `\n💳 Total: $${resumen.total.toLocaleString('es-AR')}`;
-    }
+//     if (resumen.descuentoAplicado > 0) {
+//       mensaje += `\n💰 Subtotal: $${resumen.subtotal.toLocaleString('es-AR')}`;
+//       mensaje += `\n🎁 Descuento (${resumen.porcentajeDescuento}%): -$${resumen.descuentoAplicado.toLocaleString('es-AR')}`;
+//       mensaje += `\n💳 Total: $${resumen.total.toLocaleString('es-AR')}`;
+//     } else {
+//       mensaje += `\n💳 Total: $${resumen.total.toLocaleString('es-AR')}`;
+//     }
     
-    mostrarToast(mensaje);
-    carrito = [];
-    actualizarCarrito();
-  } catch (error) {
-    console.error('Error finalizando compra:', error);
-    mostrarToast('Error al finalizar la compra');
-  }
-}
+//     mostrarToast(mensaje);
+//     carrito = [];
+//     actualizarCarrito();
+//   } catch (error) {
+//     console.error('Error finalizando compra:', error);
+//     mostrarToast('Error al finalizar la compra');
+//   }
+// }
 
 // Cargar productos y clientes al iniciar
 document.addEventListener('DOMContentLoaded', () => {
