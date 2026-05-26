@@ -112,7 +112,7 @@ async function cargarClientes() {
 function renderClientes(clientes) {
   const select = document.getElementById('cliente-select');
   select.innerHTML = '<option value="">Seleccionar cliente...</option>';
-  
+
   clientes.forEach(cliente => {
     const option = document.createElement('option');
     option.value = cliente.id;
@@ -203,7 +203,11 @@ function renderProductos(productos) {
             <input type="number" id="cant-${index}" value="1" min="1" max="${producto.stock}">
             <button class="btn-cant" onclick="cambiarCantidad('cant-${index}', 1)">+</button>
           </div>
-          <button class="btn-agregar" onclick="agregarAlCarrito('${producto.nombre}', ${producto.precio}, 'cant-${index}')">Añadir al carrito</button>
+          <button class="btn-agregar" 
+  ${producto.stock === 0 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}
+  onclick="agregarAlCarrito('${producto.nombre}', ${producto.precio}, 'cant-${index}')">
+  ${producto.stock === 0 ? 'Sin stock' : 'Añadir al carrito'}
+</button>F
         </div>
       </div>
     `;
@@ -220,7 +224,7 @@ async function finalizarCompra() {
 
   const clienteSelect = document.getElementById('cliente-select');
   const clienteId = parseInt(clienteSelect.value);
-  
+
   if (!clienteId) {
     mostrarToast('Por favor selecciona un cliente');
     return;
@@ -244,11 +248,11 @@ async function finalizarCompra() {
       })
     });
     const result = await response.json();
-    
+
     // Mostrar mensaje detallado con descuento
     const resumen = result.resumen;
     let mensaje = '✅ Compra finalizada exitosamente';
-    
+
     if (resumen.descuentoAplicado > 0) {
       mensaje += `\n💰 Subtotal: $${resumen.subtotal.toLocaleString('es-AR')}`;
       mensaje += `\n🎁 Descuento (${resumen.porcentajeDescuento}%): -$${resumen.descuentoAplicado.toLocaleString('es-AR')}`;
@@ -256,7 +260,7 @@ async function finalizarCompra() {
     } else {
       mensaje += `\n💳 Total: $${resumen.total.toLocaleString('es-AR')}`;
     }
-    
+
     mostrarToast(mensaje);
     carrito = [];
     actualizarCarrito();
