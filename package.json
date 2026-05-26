@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "node src/seed.js"  
+    "seed": "node src/seed.js"
   },
   "repository": {
     "type": "module",
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/lucianobudman/PP2-Grupo-2#readme",
   "type": "commonjs",
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "expres": "^0.0.5",
     "express": "^5.2.1",
