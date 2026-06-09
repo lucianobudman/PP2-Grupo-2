@@ -1,12 +1,10 @@
-//El Modelo es el "molde" de nuestra tabla. Reemplaza a las clases JS que hicimos en la Clase 3. 
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Importamos la conexión 
-// Definimos la tabla 'Productos' 
+const sequelize = require('../config/database');
+
 const Producto = sequelize.define('Producto', {
-    // El ID se crea solo por defecto (Autoincremental), no hace falta ponerlo 
     nombre: {
         type: DataTypes.STRING,
-        allowNull: false // Obligatorio 
+        allowNull: false
     },
     precio: {
         type: DataTypes.FLOAT,
@@ -15,6 +13,21 @@ const Producto = sequelize.define('Producto', {
     stock: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+    },
+    categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    validFrom: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+    },
+    validTo: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: () => new Date('2099-12-31')
     }
 });
+
 module.exports = Producto;
