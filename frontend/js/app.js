@@ -190,7 +190,7 @@ function renderProductos(productos) {
     col.innerHTML = `
       <div class="card h-100 p-3">
         <div class="img-wrap">
-          <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&q=80" class="card-img-top" alt="${producto.nombre}" onerror="this.style.display='none'">
+          <img src="${producto.imagen}" alt="${producto.nombre}">
         </div>
         <div class="card-body p-0">
           <span class="badge-custom badge-nuevo d-inline-block mb-2">Disponible</span>

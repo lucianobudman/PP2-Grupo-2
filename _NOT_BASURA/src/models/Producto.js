@@ -14,10 +14,6 @@ const Producto = sequelize.define('Producto', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    imagen: { // 👈 AGREGÁ ESTE BLOQUE EXACTAMENTE ACÁ
-        type: DataTypes.STRING,
-        allowNull: true // Permite que si algún producto no tiene foto, no se rompa
-    },
     categoryId: {
         type: DataTypes.INTEGER,
         allowNull: true
