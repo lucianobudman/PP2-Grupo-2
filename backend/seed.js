@@ -8,11 +8,11 @@ async function seed() {
   await sequelize.sync({ force: true });
 
   await Producto.bulkCreate([
-    { nombre: 'Smartphone X-1', precio: 85000, stock: 10 },
-    { nombre: 'Laptop Pro Max', precio: 450000, stock: 5 },
-    { nombre: 'Audio Ultra G', precio: 25000, stock: 20 },
-    { nombre: 'Monitor 27" 4K', precio: 180000, stock: 8 },
-    { nombre: 'Teclado Mecánico RGB', precio: 42000, stock: 15 }
+    { nombre: 'Smartphone X-1', precio: 85000, stock: 10, categoryId: 1 },
+    { nombre: 'Laptop Pro Max', precio: 450000, stock: 5, categoryId: 2 },
+    { nombre: 'Audio Ultra G', precio: 25000, stock: 20, categoryId: 3 },
+    { nombre: 'Monitor 27" 4K', precio: 180000, stock: 8, categoryId: 2 },
+    { nombre: 'Teclado Mecánico RGB', precio: 42000, stock: 15, categoryId: 4 }
   ]);
 
   await Cliente.bulkCreate([

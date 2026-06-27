@@ -2,6 +2,14 @@ let carrito = [];
 let clienteActivo = null;
 let cuponActivo = null;
 let panelAdminCargaIniciada = false;
+let productosGlobal = [];
+let categoriaSeleccionada = '';
+const categoriasMap = {
+  1: 'Celulares',
+  2: 'Computación',
+  3: 'Audio',
+  4: 'Accesorios'
+};
 
 function cambiarCantidad(id, delta) {
   const input = document.getElementById(id);
@@ -93,10 +101,36 @@ async function cargarProductos() {
   try {
     const response = await fetch('/api/productos');
     const productos = await response.json();
-    renderProductos(productos);
+    productosGlobal = productos;
+    renderCategorias();
+    aplicarFiltroCategoria();
   } catch (error) {
     console.error('Error cargando productos:', error);
   }
+}
+
+function renderCategorias() {
+  const select = document.getElementById('categoria-select');
+  if (!select) return;
+
+  const categoriasEncontradas = [...new Set(productosGlobal
+    .map(producto => producto.categoryId)
+    .filter(categoryId => categoryId != null))];
+
+  select.innerHTML = '<option value="">Todas las categorías</option>';
+  categoriasEncontradas.forEach(categoryId => {
+    const option = document.createElement('option');
+    option.value = categoryId;
+    option.textContent = categoriasMap[categoryId] || `Categoría ${categoryId}`;
+    select.appendChild(option);
+  });
+}
+
+function aplicarFiltroCategoria() {
+  const productosFiltrados = categoriaSeleccionada
+    ? productosGlobal.filter(producto => String(producto.categoryId) === categoriaSeleccionada)
+    : productosGlobal;
+  renderProductos(productosFiltrados);
 }
 
 // Cargar clientes desde el servidor
@@ -221,6 +255,11 @@ function renderProductos(productos) {
   const catalogo = document.getElementById('catalogo');
   catalogo.innerHTML = '';
 
+  if (!productos.length) {
+    catalogo.innerHTML = '<div style="width:100%; color:rgba(255,255,255,0.75);">No hay productos en esta categoría.</div>';
+    return;
+  }
+
   productos.forEach((producto, index) => {
     const col = document.createElement('div');
     col.className = 'col-md-4';
@@ -233,7 +272,7 @@ function renderProductos(productos) {
         <div class="card-body p-0">
           <span class="badge-custom badge-nuevo d-inline-block mb-2">Disponible</span>
           <h5 class="card-title">${producto.nombre}</h5>
-          <p class="card-text mb-3">Producto de alta calidad</p>
+          <p class="card-text mb-3">${categoriasMap[producto.categoryId] || 'Producto de alta calidad'}</p>
           <div class="precio mb-3"><span style="font-size:1rem; opacity:0.6;">$</span>${producto.precio.toLocaleString('es-AR')}</div>
           <div class="d-flex align-items-center gap-2 mb-3">
             <small style="color:rgba(255,255,255,0.35); text-transform:uppercase; font-size:0.68rem;">Cantidad</small>
@@ -386,6 +425,14 @@ async function exportarOrdenesExcel() {
 document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
   cargarClientes();
+
+  const categoriaSelect = document.getElementById('categoria-select');
+  if (categoriaSelect) {
+    categoriaSelect.addEventListener('change', event => {
+      categoriaSeleccionada = event.target.value;
+      aplicarFiltroCategoria();
+    });
+  }
 
   const btnExport = document.getElementById('btn-export');
   if (btnExport) {

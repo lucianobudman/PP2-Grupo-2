@@ -3,7 +3,11 @@ const productosController = {
 
 getAll: async (req, res) => { 
         try { 
-            const productos = await Producto.findAll(); // SELECT * FROM Productos 
+            const where = {};
+            if (req.query.categoryId) {
+                where.categoryId = req.query.categoryId;
+            }
+            const productos = await Producto.findAll({ where }); // SELECT * FROM Productos 
             res.json(productos); 
         } catch (error) { 
             res.status(500).json({ error: "Error al consultar la base de datos" }); 
