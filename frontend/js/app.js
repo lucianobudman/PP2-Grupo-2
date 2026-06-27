@@ -1,6 +1,7 @@
 let carrito = [];
 let clienteActivo = null;
 let cuponActivo = null;
+let panelAdminCargaIniciada = false;
 
 function cambiarCantidad(id, delta) {
   const input = document.getElementById(id);
@@ -140,6 +141,16 @@ function actualizarVistaAdmin() {
 
   if (panelAdminHome) {
     panelAdminHome.style.display = adminVisible ? 'block' : 'none';
+  }
+
+  const btnExport = document.getElementById('btn-export');
+  if (btnExport) {
+    btnExport.style.display = adminVisible ? 'inline-flex' : 'none';
+  }
+
+  if (adminVisible && !panelAdminCargaIniciada) {
+    cargarPanelAdmin();
+    panelAdminCargaIniciada = true;
   }
 }
 
@@ -336,9 +347,48 @@ async function cargarPanelAdmin() {
   }
 }
 
-// Cargar productos, clientes y panel de administración al iniciar
+async function exportarOrdenesExcel() {
+  try {
+    const response = await fetch('/api/ordenes');
+    const ordenes = await response.json();
+
+    const filas = [];
+    filas.push(['ID', 'Cliente', 'Total', 'Estado', 'Descuento', 'Fecha']);
+
+    ordenes.forEach(orden => {
+      filas.push([
+        orden.id,
+        orden.clienteId || 'Sin cliente',
+        orden.total || 0,
+        orden.estado || 'Pendiente',
+        orden.descuento || 0,
+        orden.fecha ? new Date(orden.fecha).toLocaleString('es-AR') : ''
+      ]);
+    });
+
+    const csvContent = filas.map(fila => fila.map(celda => `"${String(celda).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = 'ordenes_exportadas.csv';
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error exportando órdenes:', error);
+    mostrarToast('No se pudo exportar las órdenes.');
+  }
+}
+
+// Cargar productos y clientes al iniciar
 document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
   cargarClientes();
-  cargarPanelAdmin();
+
+  const btnExport = document.getElementById('btn-export');
+  if (btnExport) {
+    btnExport.addEventListener('click', exportarOrdenesExcel);
+  }
 });

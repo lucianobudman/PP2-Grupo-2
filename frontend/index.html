@@ -503,7 +503,7 @@
     <nav class="navbar navbar-expand d-flex justify-content-between">
       <a class="navbar-brand" href="#">NEODATA <span>//</span> ULTRA</a>
       <div style="display:flex; gap:10px; align-items:center;">
-        <a id="btn-admin" class="btn-carrito" href="/admin" style="text-decoration:none; display:inline-flex; align-items:center;">ADMIN</a>
+        <a id="btn-admin" class="btn-carrito" href="/admin" style="text-decoration:none; display:none; align-items:center;">ADMIN</a>
         <button class="btn-carrito" onclick="scrollAlCarrito()">
           MI CARRITO
           <span class="contador-burbuja" id="cart-count">0</span>
@@ -540,7 +540,10 @@
       </div>
 
       <div id="panel-admin-home" class="admin-panel" style="display:none;">
-        <h3>Panel de administración</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap;">
+          <h3 style="margin:0;">Panel de administración</h3>
+          <button id="btn-export" class="btn-carrito" style="display:none;">EXPORTAR EXCEL</button>
+        </div>
         <div class="admin-grid">
           <div class="admin-card">
             <div style="opacity:0.65; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.12em;">Productos</div>
